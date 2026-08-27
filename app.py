@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import gzip
+import pickle
 from datetime import date
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,15 +9,12 @@ import matplotlib.pyplot as plt
 # Function used when the model pipeline was trained
 def to_string(x):
     return x.astype(str)
-# ============================================================
-# LOAD MODEL + DATA
-# ============================================================
 
-@st.cache_resource
-def load_model():
-    return joblib.load("hotel_cancellation_model_deploy.pkl")
+# Load deployment model
+model_file = "hotel_cancellation_model_cloud.pkl.gz"
 
-model = load_model()
+with gzip.open(model_file, "rb") as f:
+    model = pickle.load(f)
 # Put your original hotel booking dataset in the same folder
 # as app.py and rename it to hotel_booking.csv
 df_dashboard = pd.read_csv("hotel_bookings.csv")
